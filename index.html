@@ -193,8 +193,21 @@ Print / Save PDF
 <div class="receipt-header">
 
 <div>
+
 <h2>NICCO RODS</h2>
+
 <p>Invoice Preview</p>
+
+<div class="bank-top">
+
+<p><strong>Access Bank</strong></p>
+
+<p>0030158603</p>
+
+<p>ALADE ADENIYI SAIDI AKANJI</p>
+
+</div>
+
 </div>
 
 <div class="success-badge">
@@ -240,21 +253,6 @@ INVOICE
 <strong id="previewBalance"></strong>
 </div>
 
-<div class="receipt-row">
-<span>Bank</span>
-<strong>Access Bank</strong>
-</div>
-
-<div class="receipt-row">
-<span>Account Number</span>
-<strong>0030158603</strong>
-</div>
-
-<div class="receipt-row">
-<span>Account Name</span>
-<strong>ALADE ADENIYI SAIDI AKANJI</strong>
-</div>
-
 <div class="receipt-total">
 <span>Total</span>
 <strong id="previewTotal"></strong>
@@ -265,6 +263,26 @@ INVOICE
 </div>
 
 <script>
+
+const materialPrices = {
+
+"8mm Rod": 850000,
+
+"10mm Rod": 950000,
+
+"12mm Rod": 1200000,
+
+"16mm Rod": 1500000,
+
+"Galvanized Pipe": 700000,
+
+"Square Pipe": 650000,
+
+"HB Pipe": 600000,
+
+"Metal Plate": 500000
+
+};
 
 function formatNumber(num){
 return Number(num).toLocaleString('en-NG');
@@ -277,25 +295,34 @@ const row = `
 
 <td>
 
-<select class="material">
+<select class="material" onchange="updatePrice(this)">
+
 <option>8mm Rod</option>
+
 <option>10mm Rod</option>
+
 <option>12mm Rod</option>
+
 <option>16mm Rod</option>
+
 <option>Galvanized Pipe</option>
+
 <option>Square Pipe</option>
+
 <option>HB Pipe</option>
+
 <option>Metal Plate</option>
+
 </select>
 
 </td>
 
 <td>
-<input type="text" class="qty" placeholder="Tons">
+<input type="number" class="qty" placeholder="Tons">
 </td>
 
 <td>
-<input type="text" class="price" placeholder="1,000,000">
+<input type="text" class="price">
 </td>
 
 <td class="rowTotal">₦0</td>
@@ -305,6 +332,26 @@ const row = `
 
 document.getElementById('invoiceBody')
 .innerHTML += row;
+
+const lastRow =
+document.querySelector('#invoiceBody tr:last-child');
+
+const material =
+lastRow.querySelector('.material').value;
+
+lastRow.querySelector('.price').value =
+formatNumber(materialPrices[material]);
+
+}
+
+function updatePrice(select){
+
+const row = select.closest('tr');
+
+const material = select.value;
+
+row.querySelector('.price').value =
+formatNumber(materialPrices[material]);
 
 }
 
@@ -326,8 +373,7 @@ row.querySelector('.material').value;
 
 const qty =
 Number(
-row.querySelector('.qty')
-.value.replace(/,/g,'')
+row.querySelector('.qty').value
 ) || 0;
 
 const price =
@@ -345,7 +391,7 @@ row.querySelector('.rowTotal').innerHTML =
 
 grandItems += `
 <div style="margin-bottom:12px;">
-${material} - ${qty} Tons
+${material} - ${qty} Tons = ₦${formatNumber(rowTotal)}
 </div>
 `;
 
@@ -549,4 +595,4 @@ loadInvoices();
 </script>
 
 </body>
-  </html>
+</html>
